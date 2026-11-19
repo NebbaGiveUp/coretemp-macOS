@@ -352,10 +352,40 @@ class CoreTempApp(tk.Tk):
                                 bg=th["box_bg"], fg=th["text_main"], font=("MS Sans Serif", 9, "bold"), anchor=tk.W, padx=4)
         self.box_tdp.grid(row=7, column=3, sticky="ew", pady=2)
 
-        # Box 2: Processor #0: Temperature & Telemetry Readings
+        # Bottom Status Bar (Pack at bottom first to guarantee visibility)
+        self.status_bar = tk.Frame(self, bg=th["bg"], bd=1, relief=th["relief"], padx=8, pady=4)
+        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.lbl_limiters = tk.Label(self.status_bar, text="Limits: None (Free Headroom)", font=("MS Sans Serif", 8),
+                                     fg=th["text_main"], bg=th["bg"], anchor=tk.W)
+        self.lbl_limiters.pack(side=tk.LEFT)
+
+        self.btn_issue = tk.Button(
+            self.status_bar,
+            text="Report an Issue",
+            font=("MS Sans Serif", 8),
+            relief=tk.RAISED,
+            bd=1,
+            bg=th["card_bg"],
+            fg=th["text_main"],
+            activebackground=th["border"],
+            activeforeground=th["text_main"],
+            highlightthickness=0,
+            padx=8,
+            pady=1,
+            command=self.open_issue_tracker,
+            cursor="pointinghand"
+        )
+        self.btn_issue.pack(side=tk.RIGHT, padx=(8, 2))
+
+        self.lbl_ambient = tk.Label(self.status_bar, text="Ambient: 20.0°C", font=("MS Sans Serif", 8),
+                                    fg=th["text_muted"], bg=th["bg"], anchor=tk.E)
+        self.lbl_ambient.pack(side=tk.RIGHT)
+
+        # Box 2: Processor #0: Temperature & Telemetry Readings (Expands into remaining cavity)
         self.box_readings = tk.LabelFrame(self, text="Processor #0: Temperature Readings", font=("MS Sans Serif", 9, "bold"),
                                           fg=th["text_main"], bg=th["card_bg"], padx=8, pady=6, bd=1, relief=tk.GROOVE)
-        self.box_readings.pack(fill=tk.BOTH, expand=True, padx=10, pady=4)
+        self.box_readings.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=10, pady=4)
 
         # Sub-header: Tj. Max: [100°C]       Min.   Max.   Load (Clock)
         header_row = tk.Frame(self.box_readings, bg=th["card_bg"])
@@ -425,35 +455,7 @@ class CoreTempApp(tk.Tk):
                 "load": box_load
             })
 
-        # Bottom Status Bar
-        self.status_bar = tk.Frame(self, bg=th["bg"], bd=1, relief=th["relief"], padx=6, pady=3)
-        self.status_bar.pack(fill=tk.X, side=tk.BOTTOM)
 
-        self.lbl_limiters = tk.Label(self.status_bar, text="Limits: None (Free Headroom)", font=("MS Sans Serif", 8),
-                                     fg=th["text_main"], bg=th["bg"], anchor=tk.W)
-        self.lbl_limiters.pack(side=tk.LEFT)
-
-        self.btn_issue = tk.Button(
-            self.status_bar,
-            text="Report an Issue",
-            font=("MS Sans Serif", 8),
-            relief=tk.RAISED,
-            bd=1,
-            bg=th["card_bg"],
-            fg=th["text_main"],
-            activebackground=th["border"],
-            activeforeground=th["text_main"],
-            highlightthickness=0,
-            padx=6,
-            pady=1,
-            command=self.open_issue_tracker,
-            cursor="pointinghand"
-        )
-        self.btn_issue.pack(side=tk.RIGHT, padx=(6, 2))
-
-        self.lbl_ambient = tk.Label(self.status_bar, text="Ambient: 20.0°C", font=("MS Sans Serif", 8),
-                                    fg=th["text_muted"], bg=th["bg"], anchor=tk.E)
-        self.lbl_ambient.pack(side=tk.RIGHT)
 
     def on_telemetry(self, data):
         self.latest_data = data
