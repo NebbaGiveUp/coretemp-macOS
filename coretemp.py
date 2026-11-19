@@ -360,7 +360,7 @@ class CoreTempApp(tk.Tk):
                                      fg=th["text_main"], bg=th["bg"], anchor=tk.W)
         self.lbl_limiters.pack(side=tk.LEFT)
 
-        self.btn_issue = tk.Button(
+        self.btn_issue = tk.Label(
             self.status_bar,
             text="Report an Issue",
             font=("MS Sans Serif", 8),
@@ -368,14 +368,14 @@ class CoreTempApp(tk.Tk):
             bd=1,
             bg=th["card_bg"],
             fg=th["text_main"],
-            activebackground=th["border"],
-            activeforeground=th["text_main"],
-            highlightthickness=0,
             padx=8,
             pady=1,
-            command=self.open_issue_tracker,
             cursor="pointinghand"
         )
+        self.btn_issue.bind("<ButtonPress-1>", lambda e: self.btn_issue.config(relief=tk.SUNKEN))
+        self.btn_issue.bind("<ButtonRelease-1>", lambda e: (self.btn_issue.config(relief=tk.RAISED), self.open_issue_tracker()))
+        self.btn_issue.bind("<Enter>", lambda e: self.btn_issue.config(bg=self.theme["border"]))
+        self.btn_issue.bind("<Leave>", lambda e: self.btn_issue.config(bg=self.theme["card_bg"]))
         self.btn_issue.pack(side=tk.RIGHT, padx=(8, 2))
 
         self.lbl_ambient = tk.Label(self.status_bar, text="Ambient: 20.0°C", font=("MS Sans Serif", 8),
@@ -581,8 +581,7 @@ class CoreTempApp(tk.Tk):
         self.btn_issue.config(
             bg=th["card_bg"],
             fg=th["text_main"],
-            activebackground=th["border"],
-            activeforeground=th["text_main"]
+            relief=tk.RAISED
         )
 
         for box in [self.box_model, self.box_platform, self.box_gpu_name, self.box_gpu_type,
