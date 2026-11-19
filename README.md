@@ -1,4 +1,4 @@
-# Core Temp for macOS (`coretemp-macOS`)
+# Core Temp for macOS
 
 A lightweight hardware telemetry and temperature monitor for Intel Alder Lake-P processors on macOS, featuring the classic Core Temp desktop interface.
 
