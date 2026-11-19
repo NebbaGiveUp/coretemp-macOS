@@ -1,0 +1,5 @@
+#!/bin/bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+RESOURCES_DIR="$DIR/../Resources"
+PYTHON_BIN="$(which python3 2>/dev/null || echo "/usr/local/bin/python3")"
+exec "$PYTHON_BIN" "$RESOURCES_DIR/coretemp.py"
