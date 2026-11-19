@@ -1,85 +1,71 @@
 # Core Temp for macOS
 
-A lightweight hardware telemetry and temperature monitor for Intel Alder Lake-P processors on macOS, featuring the classic Core Temp desktop interface.
+A lightweight hardware telemetry and temperature monitor for Intel Alder Lake-P processors on macOS, styled after the classic Windows Core Temp utility.
 
-This is a vibe coded application developed for the Dell Latitude 7430 Hackintosh and other Intel-based macOS systems.
+Tested on **Dell Latitude 7430** (Intel Core i7-1270P) running macOS Tahoe (26.x) and Sequoia (15.x).
 
 ---
 
 ## Features
 
-- **Classic Core Temp Interface:** Faithful recreation of the compact Windows Core Temp UI, featuring dual-theme support (monochrome dark gray and classic light).
-- **Per-Core Telemetry:** Live frequency and utilization tracking for 12 physical cores (4 Performance cores with Hyper-Threading + 8 Efficient cores, 16 logical threads).
-- **Dynamic Silicon Junction Thermal Model:** Real-time die temperature estimation calculated from Intel RAPL power dissipation and per-core clock telemetry.
-- **Package & Component Power:** Real-time Package TDP, Core power, and Intel Iris Xe GT power measurements.
-- **Integrated GPU Profiling:** Displays GPU Name (`Intel Iris Xe Graphics 0x46A6`), EU count, and dynamic VRAM configuration.
-- **Hardware Throttling Status:** Live detection of thermal limits, PL1 sustained limits, PL2 burst limits, and VRM ICCMAX constraints.
-- **One-Click Stress Testing:** Built-in multi-threaded all-core workload runner under `Tools -> Run 10s CPU Stress Test`.
-- **In-App Issue Reporting:** Dedicated "Report an Issue" button linking directly to the repository issue tracker.
+- **Classic UI:** Compact desktop interface with dual-theme support (Dark and Classic Light).
+- **Per-Core Telemetry:** Live frequency and utilization tracking for 4 Performance cores (8 threads) and 8 Efficient cores (16 logical threads total).
+- **Thermal Modeling:** Real-time junction temperature estimation using Intel RAPL power dissipation and per-core clock residency.
+- **Power Monitoring:** Real-time Package TDP, Core power, and Intel Iris Xe GT power draw.
+- **GPU Profiling:** Reports GPU device name (`Intel Iris Xe Graphics 0x46A6`), EU count, and dynamic VRAM allocation.
+- **Throttle Detection:** Live flags for thermal throttling, PL1/PL2 power limits, and VRM current limits.
+- **Stress Test:** Built-in multi-threaded CPU stress benchmark (`Tools -> Run 10s CPU Stress Test`).
 
 ---
 
 ## System Requirements
 
-- **Operating System:** macOS Monterey (12.x), Ventura (13.x), Sonoma (14.x), Sequoia (15.x), or Tahoe (26.x).
-- **Processor:** 12th-Gen Intel Alder Lake-P (Core i7-1270P tested) or compatible Intel Core CPU.
-- **Dependencies:** Python 3 (with standard `tkinter` framework).
+- **OS:** macOS 12 Monterey or later (tested on macOS 15 Sequoia and macOS 26 Tahoe).
+- **CPU:** 12th-Gen Intel Core (Alder Lake-P / i7-1270P) or compatible Intel processor.
+- **Runtime:** Python 3 with `tkinter` (included with macOS command line tools / Homebrew).
 
 ---
 
-## Installation and Usage
+## Installation & Running
 
-### Option 1: Standalone Application (`Core Temp.app`)
+### Application Bundle
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/NebbaGiveUp/coretemp-macOS.git
-   cd coretemp-macOS
-   ```
-2. Copy `Core Temp.app` to your `/Applications` directory:
-   ```bash
-   cp -R "Core Temp.app" /Applications/
-   ```
-3. Launch **Core Temp** from Spotlight, Launchpad, or Finder.
+```bash
+git clone https://github.com/NebbaGiveUp/coretemp-macOS.git
+cp -R "coretemp-macOS/Core Temp.app" /Applications/
+```
 
-### Option 2: Run via Terminal
+Launch **Core Temp** from `/Applications`, Spotlight, or Launchpad.
+
+### Terminal
 
 ```bash
 cd coretemp-macOS
 python3 coretemp.py
 ```
 
-Or double-click `Launch Core Temp.command` in Finder.
+Alternatively, run `Launch Core Temp.command` in Finder.
 
 ---
 
-## Telemetry Implementation Notes
+## Telemetry Implementation
 
-Alder Lake Hackintoshes running Lilu and VirtualSMC do not expose native MSR thermal junction registers (`TC0P`) because Lilu identifies the CPU generation as unknown. 
+On Alder Lake Hackintoshes, Lilu and VirtualSMC do not expose native MSR thermal junction registers (`TC0P`) due to unmatched CPU generation IDs.
 
-To overcome this limitation, Core Temp for macOS captures real-time Intel RAPL hardware counters and per-core clock residency via `powermetrics`, feeding a dynamic silicon junction model:
+Core Temp calculates per-core temperatures by reading Intel RAPL energy counters and frequency residency from `powermetrics`, applying a transient thermal resistance model calibrated to the cooling assembly of the Dell Latitude 7430:
 
-$$T_{\text{core}} = T_{\text{ambient}} + R_{\theta \text{JA}} \cdot P_{\text{package}} \cdot \left(1 - e^{-\Delta t / \tau}\right) + \Delta T_{\text{clock}}$$
-
-- **Base Ambient Reference ($T_{\text{ambient}}$):** Captured from SBS smart battery temperature sensors (`AppleSmartBattery`).
-- **Thermal Resistance ($R_{\theta \text{JA}}$):** $1.15\,^\circ\text{C}/\text{W}$ modeled after the Dell Latitude 7430 dual-heatpipe cooling assembly.
-- **Thermal Time Constant ($\tau$):** $3.5\,\text{s}$ transient thermal mass response.
+- **Ambient Reference:** Battery thermal sensor (`AppleSmartBattery`).
+- **Thermal Resistance ($R_{\theta\text{JA}}$):** $1.15\,^\circ\text{C}/\text{W}$.
+- **Thermal Time Constant ($\tau$):** $3.5\,\text{s}$.
 
 ---
 
-## Issues & Contributing
+## Credits
 
-If you encounter bugs, broken sensor readings, or platform layout issues, please use the in-app **Report an Issue** button or visit the [Issue Tracker](https://github.com/NebbaGiveUp/coretemp-macOS/issues).
-
----
-
-## Credits & Attribution
-
-- **Arthur Liberman (ALCPU):** Creator of the original [Core Temp](https://www.alcpu.com/CoreTemp/) utility for Windows, which inspired this interface design.
-- **Development:** Vibe coded project for the macOS Hackintosh community.
+- **Arthur Liberman (ALCPU):** Creator of the original [Core Temp](https://www.alcpu.com/CoreTemp/) for Windows.
 
 ---
 
 ## License
 
-MIT License. See `LICENSE` for details.
+MIT License.
