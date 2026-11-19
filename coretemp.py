@@ -412,10 +412,10 @@ class CoreTempApp(tk.Tk):
 
         self.core_rows = []
         core_labels = [
-            "P-Core #0 (T0):", "P-Core #0 (T1):",
-            "P-Core #1 (T2):", "P-Core #1 (T3):",
-            "P-Core #2 (T4):", "P-Core #2 (T5):",
-            "P-Core #3 (T6):", "P-Core #3 (T7):",
+            "P-Core #0 (Pri):", "P-Core #1 (Pri):",
+            "P-Core #2 (Pri):", "P-Core #3 (Pri):",
+            "P-Core #0 (SMT):", "P-Core #1 (SMT):",
+            "P-Core #2 (SMT):", "P-Core #3 (SMT):",
             "E-Core #0 (T8):", "E-Core #1 (T9):",
             "E-Core #2 (T10):", "E-Core #3 (T11):"
         ]
